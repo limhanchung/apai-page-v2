@@ -3,21 +3,22 @@
 }
 
 .flex-container {
+    margin: auto;
     display: flex;
     flex-direction: row;
     align-items: stretch;
-    min-height: 100vh;
+    /* min-height: 100vh; */
 }
 
 .flex-left {
-    width: 50%;
+    width: 340px;
     margin: 5px;
     border: 2px solid blue;
     border-radius: 5px;
 }
 
 .flex-right {
-    width: 50%;
+    width: 340px;
     margin: 5px;
     border: 2px solid green;
     border-radius: 5px;
@@ -59,6 +60,7 @@ h4 {
     margin-left: 20px;
     display: block;
     position: absolute;
+    min-width: 150px;
     width: 300px;
     height: 2em;
     z-index: 1;
