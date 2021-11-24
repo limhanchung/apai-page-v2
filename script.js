@@ -53,6 +53,7 @@ const ae = {
 // 1 = low effect
 // 2 = moderate effect
 // 3 = high effect
+// 4 = unknown effect
 
 const qtc = {
     brexipirazole: 0,
@@ -90,7 +91,7 @@ const qtc = {
 // Normalisation values to ranges between 0.0 to 1.0
 const normalisationRulesForAe = {
     0: [0.00, 0.10],
-    1: [0.00, 0.33],
+    1: [0.10, 0.33],
     2: [0.33, 0.67],
     3: [0.67, 1.00],
 };
@@ -294,13 +295,13 @@ for (let i = 0; i < nzAp[0].length; i++) {
     let label = nzAp[0][i];
     let elementId = label.toLowerCase().replace(' ', '-');
     let element = generateSliderElement(label, elementId);
-    let start = 2;
+    let start = 3;
     levelOfConcern[label] = start;
     $('#levelOfConcernHeader').after(element);
     $(`.ui.slider#${elementId}`)
         .slider({
-            min: 0,
-            max: 4,
+            min: 1,
+            max: 5,
             start: start,
             step: 0,
             //smooth: true,

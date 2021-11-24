@@ -20,7 +20,6 @@
                 <a href="mailto:mypsychtools.contact@gmail.com">mypsychtools.contact@gmail.com</a>
             </p>
         </div>
-        <div id="certaintyHeader" class="header item">Certainty</div>
         <div id="levelOfConcernHeader" class="header item">Level of concern</div>
     </div>
     <div class="pusher">
@@ -28,12 +27,19 @@
             <div id="dataDisplay" class="ui container">
                 <h2 class="ui dividing header">Ranking</h2>
                 <p class="ui blue">Disclaimer: This tool is meant to be used as a guide and does not subtitute professional advice. </p>
-                <div class="ui horizontal segments">
+                <div class="ui horizontal stackable segments">
                     <div class="ui inverted segment">
-                        <div class="ui buttons">
-                            <button id="nz" class="ui inverted button">NZ</button>
-                            <div class="or"></div>
-                            <button id="aus" class="ui inverted button">AUS</button>
+                        <div class="ui grid">
+                            <div class="two wide column">
+                                <div class="ui buttons">
+                                    <button id="nz" class="ui inverted button">NZ</button>
+                                    <div class="or"></div>
+                                    <button id="aus" class="ui inverted button">AUS</button>
+                                </div>
+                            </div>
+                            <div class="two wide column">
+                                <p id="certaintyHeader">Certainty</p>
+                            </div>
                         </div>
                     </div>
                 </div>
@@ -56,11 +62,11 @@
                         <h4 class="ui header">Level of concern</h4>
                         <p>The level of concern corresponds to the following values:</p>
                         <ul class="ui list">
-                            <li>0 - not at all concerned</li>
-                            <li>1 - slightly concerned</li>
-                            <li>2 - somewhat concerned</li>
-                            <li>3 - moderately concerned</li>
-                            <li>4 - extremely concerned</li>
+                            <li>1 - not at all concerned</li>
+                            <li>2 - slightly concerned</li>
+                            <li>3 - somewhat concerned</li>
+                            <li>4 - moderately concerned</li>
+                            <li>5 - extremely concerned</li>
                         </ul>
                     </div>
                     <div class="ui segment">
