@@ -122,7 +122,7 @@ for (const key in qtc) {
 // List of available antipsychotics in different countries
 const globalApList = ['amisulpride', 'aripiprazole', 'arsenapine', 'brexipirazole', 'cariprazine', 'chlorpromazine', 'clozapine', 'flupenthixol', 'fluphenazine', 'haloperidol', 'iloperidone', 'loxapine', 'lurasidone', 'olanzapine', 'paliperidone', 'perphenazine', 'pimozide', 'pipotiazine', 'promazine', 'quetiapine', 'risperidone', 'sertindole', 'sulpiride', 'trifluoperazine', 'ziprasidone', 'zuclopenthixol'];
 const nzApList = ['amisulpride', 'aripiprazole', 'clozapine', 'olanzapine', 'quetiapine', 'risperidone', 'ziprasidone', 'chlorpromazine', 'haloperidol', 'periciazine', 'pimozide', 'prochlorperazine', 'trifluoperazine', 'zuclopenthixol', 'flupenthixol', 'fluphenazine'];
-const ausApList = ['amisulpride', 'aripiprazole', 'arsenapine', 'brexipirazole', 'chlorpromazine', 'clozapine', 'flupenthixol', 'haloperidol', 'olanzapine', 'lurasidone', 'paliperidone', 'periciazine', 'quetiapine', 'risperidone', 'ziprasidone', 'zuclopenthixol'];
+const auApList = ['amisulpride', 'aripiprazole', 'arsenapine', 'brexipirazole', 'chlorpromazine', 'clozapine', 'flupenthixol', 'haloperidol', 'olanzapine', 'lurasidone', 'paliperidone', 'periciazine', 'quetiapine', 'risperidone', 'ziprasidone', 'zuclopenthixol'];
 
 // GenerateCountrySpecificApAeScore( array, [array, array]|[string, array]... )
 function generateCountrySpecificAeScore(apList) {
@@ -162,7 +162,7 @@ function generateCountrySpecificAeScore(apList) {
 };
 
 let nzAp = generateCountrySpecificAeScore(nzApList, [aeList, nAe], ['QTc prolongation', nQtc]);
-let ausAp = generateCountrySpecificAeScore(ausApList, [aeList, nAe], ['QTc prolongation', nQtc]);
+let ausAp = generateCountrySpecificAeScore(auApList, [aeList, nAe], ['QTc prolongation', nQtc]);
 
 function generateSliderElement(label, elementId) {
     return `<a class="item">
@@ -356,8 +356,8 @@ function resize() {
 function chooseAu() {
     $('#nz').removeClass('active');
     $('#au').addClass('active');
-    currentDrugList = ausApList;
-    currentDrug = ausAp;
+    currentDrugList = auApList;
+    currentDrug = LissAp;
     update(currentDrugList, currentDrug, levelOfConcern, certainty);
 };
 
