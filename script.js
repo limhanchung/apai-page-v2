@@ -352,16 +352,16 @@ function resize() {
     $('#dataDisplay').css('padding-right', sb + 30 + 'px');
 }
 
-function chooseAus() {
+function chooseAu() {
     $('#nz').removeClass('active');
-    $('#aus').addClass('active');
+    $('#au').addClass('active');
     currentDrugList = ausApList;
     currentDrug = ausAp;
     update(currentDrugList, currentDrug, levelOfConcern, certainty);
 };
 
 function chooseNz() {
-    $('#aus').removeClass('active');
+    $('#au').removeClass('active');
     $('#nz').addClass('active');
     currentDrugList = nzApList;
     currentDrug = nzAp;
@@ -372,7 +372,7 @@ $('.ui.sidebar')
     .sidebar('show')
 setTimeout(resize(), 0.1);
 $(window).resize(resize).trigger('resize');
-$('#aus').click(chooseAus);
+$('#au').click(chooseAu);
 $('#nz').click(chooseNz);
 
 $('.ui.modal')
