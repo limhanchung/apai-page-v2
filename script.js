@@ -337,28 +337,32 @@ function resize() {
     $('#dataDisplay').css('padding-right', sb + 30 + 'px');
 }
 
-$('.ui.sidebar')
-    .sidebar('show')
-setTimeout(resize(), 0.1);
-$(window).resize(resize).trigger('resize');
-$('#aus').click(e => {
+function chooseAus() {
     $('#nz').removeClass('active');
     $('#aus').addClass('active');
     currentApList = ausApList;
     currentAp = ausAp;
     update(currentApList, currentAp, levelOfConcern, certainty);
-})
-$('#nz').click(e => {
+};
+
+function chooseNz() {
     $('#aus').removeClass('active');
     $('#nz').addClass('active');
     currentApList = nzApList;
     currentAp = nzAp;
     update(currentApList, currentAp, levelOfConcern, certainty);
-})
+};
+
+$('.ui.sidebar')
+    .sidebar('show')
+setTimeout(resize(), 0.1);
+$(window).resize(resize).trigger('resize');
+$('#aus').click(chooseAus);
+$('#nz').click(chooseNz);
 
 $('.ui.modal')
     .modal('show');
 
 $('.ui.sticky')
     .sticky();
-update(currentApList, currentAp, levelOfConcern, certainty);
+chooseNz();
