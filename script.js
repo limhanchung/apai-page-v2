@@ -349,7 +349,8 @@ $(`.ui.slider#${elementId}`)
 function resize() {
     var w = $(window).width();
     let sb = $('.ui.sidebar').width();
-    $('#dataDisplay').css('padding-right', sb + 30 + 'px');
+    $('#dataDisplay').width(w - sb - 30);
+    //$('#dataDisplay').css('padding-right', sb + 30 + 'px');
 }
 
 function chooseAu() {
