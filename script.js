@@ -125,44 +125,44 @@ const nzApList = ['amisulpride', 'aripiprazole', 'clozapine', 'olanzapine', 'que
 const ausApList = ['amisulpride', 'aripiprazole', 'arsenapine', 'brexipirazole', 'chlorpromazine', 'clozapine', 'flupenthixol', 'haloperidol', 'olanzapine', 'lurasidone', 'paliperidone', 'periciazine', 'quetiapine', 'risperidone', 'ziprasidone', 'zuclopenthixol'];
 
 // GenerateCountrySpecificApAeScore( array, [array, array]|[string, array]... )
-function generateCountrySpecificApAeScore(apList) {
+function generateCountrySpecificAeScore(apList) {
     const unknown = [0.00, 1.00];
-    let apAeList = [];
+    let aeList = [];
     for (let i = 1; i < arguments.length; i++) {
         if (typeof arguments[i][0] == 'object') {
-            arguments[i][0].forEach(e => apAeList.push(e));
+            arguments[i][0].forEach(e => aeList.push(e));
         } else if (typeof arguments[i][0] == 'string') {
-            apAeList.push(arguments[i][0]);
+            aeList.push(arguments[i][0]);
         }
     };
 
-    let apScoreRange = {};
+    let scoreRange = {};
     apList.forEach(apName => {
-        apScoreRange[apName] = [];
+        scoreRange[apName] = [];
         for (let i = 1; i < arguments.length; i++) {
             if (typeof arguments[i][0] == 'object') {
                 if (apName in arguments[i][1]) {
-                    arguments[i][1][apName].forEach(score => apScoreRange[apName].push(score));
+                    arguments[i][1][apName].forEach(score => scoreRange[apName].push(score));
                 } else {
                     for (let j = 0; j < arguments[i][0].length; j++) {
-                        apScoreRange[apName].push(unknown)
+                        scoreRange[apName].push(unknown)
                     }
                 }
             } else if (typeof arguments[i][0] == 'string') {
                 if (apName in arguments[i][1]) {
-                    apScoreRange[apName].push(arguments[i][1][apName]);
+                    scoreRange[apName].push(arguments[i][1][apName]);
                 } else {
-                    apScoreRange[apName].push(unknown);
+                    scoreRange[apName].push(unknown);
                 }
             }
         };
     })
 
-    return [apAeList, apScoreRange]
+    return [aeList, scoreRange]
 };
 
-let nzAp = generateCountrySpecificApAeScore(nzApList, [aeList, nAe], ['QTc prolongation', nQtc]);
-let ausAp = generateCountrySpecificApAeScore(ausApList, [aeList, nAe], ['QTc prolongation', nQtc]);
+let nzAp = generateCountrySpecificAeScore(nzApList, [aeList, nAe], ['QTc prolongation', nQtc]);
+let ausAp = generateCountrySpecificAeScore(ausApList, [aeList, nAe], ['QTc prolongation', nQtc]);
 
 function generateSliderElement(label, elementId) {
     return `<a class="item">
@@ -177,7 +177,7 @@ function generateUnlabelledSliderElement(elementId) {
 </a>`;
 };
 
-function generateTableRow(rank, apName, mean, range, composite) {
+function generateApTableRow(rank, apName, mean, range, composite) {
     return `
     <tr>
     <td data-label="Rank">${rank}</td>
@@ -188,23 +188,37 @@ function generateTableRow(rank, apName, mean, range, composite) {
 </tr>`;
 };
 
-let currentApList = nzApList;
-let currentAp = nzAp;
+let currentDrugList = nzApList;
+let currentDrug = nzAp;
 let levelOfConcern = {};
 let certainty = 0;
 
-function update(apList, ap, levelOfConcern, certainty) {;
+function updateApTable(elementId, sortedValue) {
+    $('#' + elementId).empty();
+    let rank = 0;
+    let lastWeightedValue = 0;
+    for (k in sortedValue) {
+        if (lastWeightedValue != sortedValue[k][0]) {
+            rank++;
+        }
+        let row = generateApTableRow(rank, k, sortedValue[k][0], sortedValue[k][1], sortedValue[k][2]);
+        $('#' + elementId).append(row);
+        lastWeightedValue = sortedValue[k][0];
+    }
+}
+
+function update(drugList, drug, levelOfConcern, certainty) {
     let weightedMean = {};
     let totalMean = 0;
     for (k in levelOfConcern) {
         totalMean += levelOfConcern[k];
     }
-    apList.forEach(apName => {
+    drugList.forEach(apName => {
         weightedMean[apName] = [];
         let locCounter = 0;
         let totalWeightedMean = 0;
         for (k in levelOfConcern) {
-            let mean = (ap[1][apName][locCounter][1] + ap[1][apName][locCounter][0]) / 2;
+            let mean = (drug[1][apName][locCounter][1] + drug[1][apName][locCounter][0]) / 2;
             weightedMean[apName].push(levelOfConcern[k] * mean);
             totalWeightedMean += levelOfConcern[k] * mean;
             locCounter++;
@@ -213,17 +227,17 @@ function update(apList, ap, levelOfConcern, certainty) {;
     });
 
     let weightedRange = {};
-    apList.forEach(apName => {
-        weightedRange[apName] = [];
+    drugList.forEach(drugName => {
+        weightedRange[drugName] = [];
         let locCounter = 0;
         let totalWeightedRange = 0;
         for (k in levelOfConcern) {
-            let range = Math.abs(ap[1][apName][locCounter][1] - ap[1][apName][locCounter][0]);
-            weightedRange[apName].push(levelOfConcern[k] * range);
+            let range = Math.abs(drug[1][drugName][locCounter][1] - drug[1][drugName][locCounter][0]);
+            weightedRange[drugName].push(levelOfConcern[k] * range);
             totalWeightedRange += levelOfConcern[k] * range;
             locCounter++;
         };
-        weightedRange[apName] = totalWeightedRange / totalMean;
+        weightedRange[drugName] = totalWeightedRange / totalMean;
     });
 
     let totalWeightedMean = 0;
@@ -269,22 +283,23 @@ function update(apList, ap, levelOfConcern, certainty) {;
     // console.log('Composite weighted value', compositeWeightedValue);
     // console.log('Sorted composite weighted value', sortedCompositeWeightedValue);
 
-    let allWeightedValue = {};
-    for (k in normalisedWeightedMean) {
-        allWeightedValue[k] = [normalisedWeightedMean[k], normalisedWeightedRange[k], sortedCompositeWeightedValue[k]];
+    let sortedWeightedValue = {};
+    for (k in sortedCompositeWeightedValue) {
+        sortedWeightedValue[k] = [sortedCompositeWeightedValue[k], normalisedWeightedMean[k], normalisedWeightedRange[k]];
     };
 
-    $('#rankingTableBody').empty();
-    let rank = 0;
-    let lastWeightedValue = 0;
-    for (k in sortedCompositeWeightedValue) {
-        if (lastWeightedValue != allWeightedValue[k][2]) {
-            rank++;
-        }
-        let row = generateTableRow(rank, k, allWeightedValue[k][2], allWeightedValue[k][0], allWeightedValue[k][1]);
-        $('#rankingTableBody').append(row);
-        lastWeightedValue = allWeightedValue[k][2];
-    }
+    updateApTable('rankingTableBody', sortedWeightedValue);
+    // $('#rankingTableBody').empty();
+    // let rank = 0;
+    // let lastWeightedValue = 0;
+    // for (k in sortedCompositeWeightedValue) {
+    //     if (lastWeightedValue != allWeightedValue[k][2]) {
+    //         rank++;
+    //     }
+    //     let row = generateApTableRow(rank, k, allWeightedValue[k][2], allWeightedValue[k][0], allWeightedValue[k][1]);
+    //     $('#rankingTableBody').append(row);
+    //     lastWeightedValue = allWeightedValue[k][2];
+    // }
 
 }
 
@@ -307,7 +322,7 @@ for (let i = 0; i < nzAp[0].length; i++) {
             //smooth: true,
             onMove: (e) => {
                 levelOfConcern[label] = e;
-                update(currentApList, currentAp, levelOfConcern, certainty);
+                update(currentDrugList, currentDrug, levelOfConcern, certainty);
             }
         });
 };
@@ -327,7 +342,7 @@ $(`.ui.slider#${elementId}`)
         },
         onMove: (e) => {
             certainty = e;
-            update(currentApList, currentAp, levelOfConcern, certainty);
+            update(currentDrugList, currentDrug, levelOfConcern, certainty);
         }
     });
 
@@ -340,17 +355,17 @@ function resize() {
 function chooseAus() {
     $('#nz').removeClass('active');
     $('#aus').addClass('active');
-    currentApList = ausApList;
-    currentAp = ausAp;
-    update(currentApList, currentAp, levelOfConcern, certainty);
+    currentDrugList = ausApList;
+    currentDrug = ausAp;
+    update(currentDrugList, currentDrug, levelOfConcern, certainty);
 };
 
 function chooseNz() {
     $('#aus').removeClass('active');
     $('#nz').addClass('active');
-    currentApList = nzApList;
-    currentAp = nzAp;
-    update(currentApList, currentAp, levelOfConcern, certainty);
+    currentDrugList = nzApList;
+    currentDrug = nzAp;
+    update(currentDrugList, currentDrug, levelOfConcern, certainty);
 };
 
 $('.ui.sidebar')
