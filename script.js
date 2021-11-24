@@ -260,14 +260,14 @@ function update(apList, ap, levelOfConcern, certainty) {;
         .reduce((r, [k, v]) => ({...r, [k]: v }), {});
 
 
-    console.log('Max weighted mean', hypothethicalMaximumWeightedMean);
-    console.log('Max weighted range', hypothethicalMaximumWeightedRange);
-    console.log('Weighted mean', weightedMean);
-    console.log('Weighted range', weightedRange);
-    console.log('Normalised weighted mean', normalisedWeightedMean);
-    console.log('Normalised weighted range', normalisedWeightedRange);
-    console.log('Composite weighted value', compositeWeightedValue);
-    console.log('Sorted composite weighted value', sortedCompositeWeightedValue);
+    // console.log('Max weighted mean', hypothethicalMaximumWeightedMean);
+    // console.log('Max weighted range', hypothethicalMaximumWeightedRange);
+    // console.log('Weighted mean', weightedMean);
+    // console.log('Weighted range', weightedRange);
+    // console.log('Normalised weighted mean', normalisedWeightedMean);
+    // console.log('Normalised weighted range', normalisedWeightedRange);
+    // console.log('Composite weighted value', compositeWeightedValue);
+    // console.log('Sorted composite weighted value', sortedCompositeWeightedValue);
 
     let allWeightedValue = {};
     for (k in normalisedWeightedMean) {
