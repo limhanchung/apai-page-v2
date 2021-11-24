@@ -88,7 +88,6 @@ const qtc = {
 };
 
 // Normalisation values to ranges between 0.0 to 1.0
-
 const normalisationRulesForAe = {
     0: [0.00, 0.10],
     1: [0.00, 0.33],
@@ -161,23 +160,204 @@ function generateCountrySpecificApAeScore(apList) {
     return [apAeList, apScoreRange]
 };
 
-let nzAp = generateCountrySpecificApAeScore(nzApList, [aeList, nAe], ['QTc prolongation', nQtc])
+let nzAp = generateCountrySpecificApAeScore(nzApList, [aeList, nAe], ['QTc prolongation', nQtc]);
+let ausAp = generateCountrySpecificApAeScore(ausApList, [aeList, nAe], ['QTc prolongation', nQtc]);
 
-function generateRangeElement(label) {
-    return `
-        <li class='nav-item'>
-            <label for='sedation' class='form-label'>${label}</label>
-            <input type='range' class='form-range' min='0' max='4' step='1' id='sedationRange'>
-            <div class="track">
-            <div class="track-inner"></div>
-          </div>
-          <div class="thumb"></div>
-        </li>`;
+function generateSliderElement(label, elementId) {
+    return `<a class="item">
+<p>${label}</p>
+<div class="ui labeled inverted blue slider adverseEffect" id="${elementId}"></div>
+</a>`;
 };
 
+function generateUnlabelledSliderElement(elementId) {
+    return `<a class="item">
+<div class="ui labeled inverted blue slider adverseEffect" id="${elementId}"></div>
+</a>`;
+};
+
+function generateTableRow(rank, apName, mean, range, composite) {
+    return `
+    <tr>
+    <td data-label="Rank">${rank}</td>
+    <td data-label="Antipsychotic">${apName}</td>
+    <td data-label="WSM(Mean)">${mean}</td>
+    <td data-label="WSM(Range)">${range}</td>
+    <td data-label="WSM(Composite)">${composite}</td>
+</tr>`;
+};
+
+let currentApList = nzApList;
+let currentAp = nzAp;
+let levelOfConcern = {};
+let certainty = 0;
+
+function update(apList, ap, levelOfConcern, certainty) {;
+    let weightedMean = {};
+    let totalMean = 0;
+    for (k in levelOfConcern) {
+        totalMean += levelOfConcern[k];
+    }
+    apList.forEach(apName => {
+        weightedMean[apName] = [];
+        let locCounter = 0;
+        let totalWeightedMean = 0;
+        for (k in levelOfConcern) {
+            let mean = (ap[1][apName][locCounter][1] + ap[1][apName][locCounter][0]) / 2;
+            weightedMean[apName].push(levelOfConcern[k] * mean);
+            totalWeightedMean += levelOfConcern[k] * mean;
+            locCounter++;
+        };
+        weightedMean[apName] = totalWeightedMean / totalMean;
+    });
+
+    let weightedRange = {};
+    apList.forEach(apName => {
+        weightedRange[apName] = [];
+        let locCounter = 0;
+        let totalWeightedRange = 0;
+        for (k in levelOfConcern) {
+            let range = Math.abs(ap[1][apName][locCounter][1] - ap[1][apName][locCounter][0]);
+            weightedRange[apName].push(levelOfConcern[k] * range);
+            totalWeightedRange += levelOfConcern[k] * range;
+            locCounter++;
+        };
+        weightedRange[apName] = totalWeightedRange / totalMean;
+    });
+
+    let totalWeightedMean = 0;
+    for (k in levelOfConcern) {
+        let mean = 1.00;
+        totalWeightedMean += levelOfConcern[k] * mean;
+    }
+    let hypothethicalMaximumWeightedMean = totalWeightedMean / totalMean;
+
+    let totalWeightedRange = 0;
+    for (k in levelOfConcern) {
+        let range = 1.00 - 0.00;
+        totalWeightedRange += levelOfConcern[k] * range;
+    }
+    let hypothethicalMaximumWeightedRange = totalWeightedRange / totalMean;
+
+    let normalisedWeightedMean = {};
+    for (k in weightedMean) {
+        normalisedWeightedMean[k] = weightedMean[k] / hypothethicalMaximumWeightedMean;
+    }
+
+    let normalisedWeightedRange = {};
+    for (k in weightedRange) {
+        normalisedWeightedRange[k] = weightedRange[k] / hypothethicalMaximumWeightedRange;
+    }
+
+    let compositeWeightedValue = {};
+    for (k in weightedMean) {
+        compositeWeightedValue[k] = normalisedWeightedMean[k] * (1 - certainty) + normalisedWeightedRange[k] * certainty;
+    }
+
+    let sortedCompositeWeightedValue = Object.entries(compositeWeightedValue)
+        .sort(([, a], [, b]) => a - b)
+        .reduce((r, [k, v]) => ({...r, [k]: v }), {});
+
+
+    console.log('Max weighted mean', hypothethicalMaximumWeightedMean);
+    console.log('Max weighted range', hypothethicalMaximumWeightedRange);
+    console.log('Weighted mean', weightedMean);
+    console.log('Weighted range', weightedRange);
+    console.log('Normalised weighted mean', normalisedWeightedMean);
+    console.log('Normalised weighted range', normalisedWeightedRange);
+    console.log('Composite weighted value', compositeWeightedValue);
+    console.log('Sorted composite weighted value', sortedCompositeWeightedValue);
+
+    let allWeightedValue = {};
+    for (k in normalisedWeightedMean) {
+        allWeightedValue[k] = [normalisedWeightedMean[k], normalisedWeightedRange[k], sortedCompositeWeightedValue[k]];
+    };
+
+    $('#rankingTableBody').empty();
+    let rank = 0;
+    let lastWeightedValue = 0;
+    for (k in sortedCompositeWeightedValue) {
+        if (lastWeightedValue != allWeightedValue[k][2]) {
+            rank++;
+        }
+        let row = generateTableRow(rank, k, allWeightedValue[k][2], allWeightedValue[k][0], allWeightedValue[k][1]);
+        $('#rankingTableBody').append(row);
+        lastWeightedValue = allWeightedValue[k][2];
+    }
+
+}
+
+
+// Display
+// Generating slider elements
 for (let i = 0; i < nzAp[0].length; i++) {
     let label = nzAp[0][i];
-    let rangeId = label.toLowerCase().replace(' ', '-');
-    let rangeElement = generateRangeElement(nzAp[0][i], rangeId);
-    document.getElementById('scalesContainer').insertAdjacentHTML('beforeend', rangeElement);
+    let elementId = label.toLowerCase().replace(' ', '-');
+    let element = generateSliderElement(label, elementId);
+    let start = 2;
+    levelOfConcern[label] = start;
+    $('#levelOfConcernHeader').after(element);
+    $(`.ui.slider#${elementId}`)
+        .slider({
+            min: 0,
+            max: 4,
+            start: start,
+            step: 0,
+            //smooth: true,
+            onMove: (e) => {
+                levelOfConcern[label] = e;
+                update(currentApList, currentAp, levelOfConcern, certainty);
+            }
+        });
 };
+let certaintyLabel = 'Certainty required';
+let elementId = certaintyLabel.toLowerCase().replace(' ', '-');
+let certaintySliderElement = generateUnlabelledSliderElement(elementId);
+let certaintySliderLabels = ['Less', 'More'];
+$('#certaintyHeader').after(certaintySliderElement);
+$(`.ui.slider#${elementId}`)
+    .slider({
+        min: 0,
+        max: 1,
+        start: 0.5,
+        step: 0,
+        interpretLabel: function(value) {
+            return certaintySliderLabels[value];
+        },
+        onMove: (e) => {
+            certainty = e;
+            update(currentApList, currentAp, levelOfConcern, certainty);
+        }
+    });
+
+function resize() {
+    var w = $(window).width();
+    let sb = $('.ui.sidebar').width();
+    $('#dataDisplay').css('padding-right', sb + 30 + 'px');
+}
+
+$('.ui.sidebar')
+    .sidebar('show')
+setTimeout(resize(), 0.1);
+$(window).resize(resize).trigger('resize');
+$('#aus').click(e => {
+    $('#nz').removeClass('active');
+    $('#aus').addClass('active');
+    currentApList = ausApList;
+    currentAp = ausAp;
+    update(currentApList, currentAp, levelOfConcern, certainty);
+})
+$('#nz').click(e => {
+    $('#aus').removeClass('active');
+    $('#nz').addClass('active');
+    currentApList = nzApList;
+    currentAp = nzAp;
+    update(currentApList, currentAp, levelOfConcern, certainty);
+})
+
+$('.ui.modal')
+    .modal('show');
+
+$('.ui.sticky')
+    .sticky();
+update(currentApList, currentAp, levelOfConcern, certainty);
