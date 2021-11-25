@@ -162,7 +162,7 @@ function generateCountrySpecificAeScore(apList) {
 };
 
 let nzAp = generateCountrySpecificAeScore(nzApList, [aeList, nAe], ['QTc prolongation', nQtc]);
-let ausAp = generateCountrySpecificAeScore(auApList, [aeList, nAe], ['QTc prolongation', nQtc]);
+let auAp = generateCountrySpecificAeScore(auApList, [aeList, nAe], ['QTc prolongation', nQtc]);
 
 function generateSliderElement(label, elementId) {
     return `<a class="item">
