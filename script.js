@@ -299,6 +299,7 @@ function update(drugList, drug, levelOfConcern, certainty) {
     //     $('#rankingTableBody').append(row);
     //     lastWeightedValue = allWeightedValue[k][2];
     // }
+    filter();
 
 }
 
@@ -345,11 +346,8 @@ $(`.ui.slider#${elementId}`)
         }
     });
 
-function resize() {
+function filter() {
     var w = $(window).width();
-    let sb = $('.ui.sidebar').width();
-    $('#dataDisplay').width(w - sb - 30);
-    console.log(w);
     if (w < 1080) {
         $('.colWsmMean').hide();
         $('.colWsmRange').hide();
@@ -363,6 +361,13 @@ function resize() {
     } else {
         $('.colWsmComposite').show();
     }
+};
+
+function resize() {
+    var w = $(window).width();
+    let sb = $('.ui.sidebar').width();
+    $('#dataDisplay').width(w - sb - 30);
+    filter();
     //$('#dataDisplay').css('padding-right', sb + 30 + 'px');
 }
 
