@@ -392,7 +392,5 @@ $('#nz').click(chooseNz);
 $('.ui.modal')
     .modal('show');
 
-$('.ui.sticky')
-    .sticky();
 chooseNz();
 resize();
