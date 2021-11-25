@@ -178,13 +178,12 @@ function generateUnlabelledSliderElement(elementId) {
 };
 
 function generateApTableRow(rank, apName, mean, range, composite) {
-    return `
-    <tr>
-    <td data-label="Rank">${rank}</td>
-    <td data-label="Antipsychotic">${apName}</td>
-    <td data-label="WSM(Mean)">${mean}</td>
-    <td data-label="WSM(Range)">${range}</td>
-    <td data-label="WSM(Composite)">${composite}</td>
+    return `<tr>
+    <td class="colRank" data-label="Rank">${rank}</td>
+    <td class="colName" data-label="Antipsychotic">${apName}</td>
+    <td class="colWsmComposite" data-label="WSM(Composite)">${mean.toFixed(4)}</td>
+    <td class="colWsmMean" data-label="WSM(Mean)">${range.toFixed(4)}</td>
+    <td class="colWsmRange" data-label="WSM(Range)">${composite.toFixed(4)}</td>
 </tr>`;
 };
 
@@ -350,6 +349,20 @@ function resize() {
     var w = $(window).width();
     let sb = $('.ui.sidebar').width();
     $('#dataDisplay').width(w - sb - 30);
+    console.log(w);
+    if (w < 1080) {
+        $('.colWsmMean').hide();
+        $('.colWsmRange').hide();
+    } else {
+        $('.colWsmMean').show();
+        $('.colWsmRange').show();
+    }
+
+    if (w < 640) {
+        $('.colWsmComposite').hide();
+    } else {
+        $('.colWsmComposite').show();
+    }
     //$('#dataDisplay').css('padding-right', sb + 30 + 'px');
 }
 
@@ -382,3 +395,4 @@ $('.ui.modal')
 $('.ui.sticky')
     .sticky();
 chooseNz();
+resize();
