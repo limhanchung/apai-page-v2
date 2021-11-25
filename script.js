@@ -357,7 +357,7 @@ function chooseAu() {
     $('#nz').removeClass('active');
     $('#au').addClass('active');
     currentDrugList = auApList;
-    currentDrug = LissAp;
+    currentDrug = listAp;
     update(currentDrugList, currentDrug, levelOfConcern, certainty);
 };
 
