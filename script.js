@@ -1,5 +1,4 @@
 import { nzAp, nzApList, auAp, auApList } from './ap.js';
-console.log(nzAp, nzApList);
 
 function generateSliderElement(label, elementId) {
     return `<a class="item">
