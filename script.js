@@ -28,7 +28,7 @@ let currentDrug = nzAp;
 let levelOfConcern = {};
 let certainty = 0;
 
-function updateApTable(elementId, sortedValue) {
+function updateTable(elementId, sortedValue) {
     $('#' + elementId).empty();
     let rank = 0;
     let lastWeightedValue = 0;
@@ -124,7 +124,7 @@ function update(drugList, drug, levelOfConcern, certainty) {
         sortedWeightedValue[k] = [sortedCompositeWeightedValue[k], normalisedWeightedMean[k], normalisedWeightedRange[k]];
     };
 
-    updateApTable('rankingTableBody', sortedWeightedValue);
+    updateTable('rankingTableBody', sortedWeightedValue);
     // $('#rankingTableBody').empty();
     // let rank = 0;
     // let lastWeightedValue = 0;
@@ -152,8 +152,8 @@ for (let i = 0; i < nzAp[0].length; i++) {
     $('#levelOfConcernHeader').after(element);
     $(`.ui.slider#${elementId}`)
         .slider({
-            min: 1,
-            max: 5,
+            min: 0,
+            max: 4,
             start: start,
             step: 0,
             //smooth: true,
