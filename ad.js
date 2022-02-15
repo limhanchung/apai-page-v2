@@ -281,16 +281,16 @@ for (const key in adNZFAe) {
 // 2 = Marked limitation
 // 3 = Unknown
 const adWithdrawal = {
-    SSRI: 2,
-    SNRI: 3,
-    SMS: 2,
-    NARI: 1,
-    TCA: 3,
-    RMAOI: 1,
-    TECA: 2,
-    NASSA: 2,
-    MAOI: 2,
-    MELATONERGIC: 1,
+    SSRI: 1,
+    SNRI: 2,
+    SMS: 1,
+    NARI: 0,
+    TCA: 2,
+    RMAOI: 0,
+    TECA: 1,
+    NASSA: 1,
+    MAOI: 1,
+    MELATONERGIC: 0,
     NDRI: 0,
     fluoxetine: 0,
 };
@@ -310,7 +310,7 @@ const normalisationRulesForAdWithdrawal = {
     0: [0.00, 0.33],
     1: [0.33, 0.67],
     2: [0.67, 1.00],
-    3: [0.00, 1.00]
+    3: [0.00, 0.00]
 };
 
 const nFullAdWithdrawal = {};
@@ -333,14 +333,14 @@ const adOverdose = {
     bupropion: 1,
     duloxetine: 0,
     lofepramine: 0,
-    MAOI: 3,
+    MAOI: 2,
     mianserin: 0,
     mirtazapine: 0,
     moclobemide: 0,
     reboxetine: 0,
     SSRI: 0,
     trazodone: 0,
-    TCA: 3,
+    TCA: 2,
     venlafaxine: 2,
     vilazodone: 0,
     vortioxetine: 1,
@@ -407,7 +407,7 @@ let globalAdList = ['amitriptyline', 'clomipramine', 'dosulepin', 'doxepin', 'im
 let nzAdList = ['citalopram', 'escitalopram', 'fluoxetine', 'paroxetine', 'sertraline', 'venlafaxine', 'amitriptyline', 'clomipramine', 'dosulepin', 'imipramine', 'nortriptytyline', 'tranylcypromine', 'moclobemide', 'mirtazapine', 'reboxetine', 'bupropion', 'vortioxetine'];
 
 // From PBS Australia
-let auAdList = ['amitriptyline', 'clomipramine', 'dosulepin', 'doxepin', 'imipramine', 'nortriptyline', 'citalopram', 'escitalopram', 'fluoxetine', 'fluvoxamine', 'paroxetine', 'sertraline', 'phenelzine', 'tranylcypromine', 'moclobemide', 'desvenlafaxine', 'duloxetine', 'lithium carbonate', 'mianserin', 'mirtazapine', 'reboxetine', 'venlafaxine'];
+let auAdList = ['amitriptyline', 'clomipramine', 'dosulepin', 'doxepin', 'imipramine', 'nortriptyline', 'citalopram', 'escitalopram', 'fluoxetine', 'fluvoxamine', 'paroxetine', 'sertraline', 'phenelzine', 'tranylcypromine', 'moclobemide', 'desvenlafaxine', 'duloxetine', 'lithium carbonate', 'mianserin', 'mirtazapine', 'reboxetine', 'venlafaxine', 'bupropion'];
 
 
 // GenerateCountrySpecificApAeScore( array, [array, array]|[string, array]... )
@@ -475,9 +475,17 @@ function generateCountrySpecificAeScore(adList) {
     return [uniqueAeList, uniqueScoreRange];
 };
 
-let nzAd = generateCountrySpecificAeScore(nzAdList, [nAdMaeList, nAdMAe], [nAdNZFAeList, nAdNZFAe], ['Withdrawals', nFullAdWithdrawal], ['Overdose risk', nFullAdOverdose]);
-let auAd = generateCountrySpecificAeScore(nzAdList, [nAdMaeList, nAdMAe], [nAdNZFAeList, nAdNZFAe], ['Withdrawals', nFullAdWithdrawal], ['Overdose risk', nFullAdOverdose]);
-console.log(nzAd);
+// let nzAd = generateCountrySpecificAeScore(nzAdList, [nAdMaeList, nAdMAe], [nAdNZFAeList, nAdNZFAe], ['Withdrawals', nFullAdWithdrawal], ['Overdose risk', nFullAdOverdose]);
+// let auAd = generateCountrySpecificAeScore(nzAdList, [nAdMaeList, nAdMAe], [nAdNZFAeList, nAdNZFAe], ['Withdrawals', nFullAdWithdrawal], ['Overdose risk', nFullAdOverdose]);
+
+// let nzAd = generateCountrySpecificAeScore(nzAdList, [nAdNZFAeList, nAdNZFAe], ['Withdrawals', nFullAdWithdrawal], ['Overdose risk', nFullAdOverdose]);
+// let auAd = generateCountrySpecificAeScore(auAdList, [nAdNZFAeList, nAdNZFAe], ['Withdrawals', nFullAdWithdrawal], ['Overdose risk', nFullAdOverdose]);
+
+let nzAd = generateCountrySpecificAeScore(nzAdList, [nAdMaeList, nAdMAe], [nAdNZFAeList, nAdNZFAe]);
+let auAd = generateCountrySpecificAeScore(auAdList, [nAdMaeList, nAdMAe], [nAdNZFAeList, nAdNZFAe]);
+
+
+export { nzAd, nzAdList, auAd, auAdList };
 
 
 // Todo: Incorporate relative efficacy <Ciprani>

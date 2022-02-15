@@ -1,15 +1,16 @@
 import { nzAp, nzApList, auAp, auApList } from './ap.js';
+import { nzAd, nzAdList, auAd, auAdList } from './ad.js';
 
-function generateSliderElement(label, elementId) {
-    return `<a class="item">
+function generateAESliderElement(label, elementId) {
+    return `<a class="item adverse-effect-item">
 <p>${label}</p>
-<div class="ui labeled inverted blue slider adverseEffect" id="${elementId}"></div>
+<div class="ui labeled inverted blue slider adverse-effect" id="${elementId}"></div>
 </a>`;
 };
 
 function generateUnlabelledSliderElement(elementId) {
     return `<a class="item">
-<div class="ui labeled inverted blue slider adverseEffect" id="${elementId}"></div>
+<div class="ui labeled inverted blue slider adverse-effect" id="${elementId}"></div>
 </a>`;
 };
 
@@ -23,8 +24,16 @@ function generateApTableRow(rank, apName, mean, range, composite) {
 </tr>`;
 };
 
-let currentDrugList = nzApList;
-let currentDrug = nzAp;
+let currentDrugList = nzAdList;
+let currentDrug = nzAd;
+let currentCountry = 'nz';
+let lastMedicationType = 'ad';
+let currentMedicationType = 'ad';
+// let currentDrugList = nzApList;
+// let currentDrug = nzAp;
+// let currentCountry = 'nz';
+// let lastMedicationType = 'ap';
+// let currentMedicationType = 'ap';
 let levelOfConcern = {};
 let certainty = 0;
 
@@ -42,24 +51,24 @@ function updateTable(elementId, sortedValue) {
     }
 }
 
-function update(drugList, drug, levelOfConcern, certainty) {
+function updateRanking(drugList, drug, levelOfConcern, certainty) {
     let weightedMean = {};
     let totalMean = 0;
 
     for (const k in levelOfConcern) {
         totalMean += levelOfConcern[k];
     }
-    drugList.forEach(apName => {
-        weightedMean[apName] = [];
+    drugList.forEach(drugName => {
+        weightedMean[drugName] = [];
         let locCounter = 0;
         let totalWeightedMean = 0;
         for (const k in levelOfConcern) {
-            let mean = (drug[1][apName][locCounter][1] + drug[1][apName][locCounter][0]) / 2;
-            weightedMean[apName].push(levelOfConcern[k] * mean);
+            let mean = (drug[1][drugName][locCounter][1] + drug[1][drugName][locCounter][0]) / 2;
+            weightedMean[drugName].push(levelOfConcern[k] * mean);
             totalWeightedMean += levelOfConcern[k] * mean;
             locCounter++;
         };
-        weightedMean[apName] = totalWeightedMean / totalMean;
+        weightedMean[drugName] = totalWeightedMean / totalMean;
     });
 
     let weightedRange = {};
@@ -143,27 +152,37 @@ function update(drugList, drug, levelOfConcern, certainty) {
 
 // Display
 // Generating slider elements
-for (let i = 0; i < nzAp[0].length; i++) {
-    let label = nzAp[0][i];
-    let elementId = label.toLowerCase().replace(' ', '-');
-    let element = generateSliderElement(label, elementId);
-    let start = 3;
-    levelOfConcern[label] = start;
-    $('#levelOfConcernHeader').after(element);
-    $(`.ui.slider#${elementId}`)
-        .slider({
-            min: 0,
-            max: 4,
-            start: start,
-            step: 0,
-            //smooth: true,
-            onMove: (e) => {
-                levelOfConcern[label] = e;
-                update(currentDrugList, currentDrug, levelOfConcern, certainty);
-            }
-        });
-};
-let certaintyLabel = 'Certainty required';
+function generateAESliderElements() {
+    for (let i = 0; i < currentDrug[0].length; i++) {
+        let label = currentDrug[0][i];
+        let elementId = label.toLowerCase().replaceAll(' ', '-').replaceAll('/', '-');
+        let element = generateAESliderElement(label, elementId);
+        let start = 3;
+        levelOfConcern[label] = start;
+        $('#levelOfConcernHeader').after(element);
+        $(`.ui.slider#${elementId}`)
+            .slider({
+                min: 0,
+                max: 4,
+                start: start,
+                step: 0,
+                //smooth: true,
+                onMove: (e) => {
+                    levelOfConcern[label] = e;
+                    updateRanking(currentDrugList, currentDrug, levelOfConcern, certainty);
+                }
+            });
+    };
+}
+
+function clearAESliderElements() {
+    levelOfConcern = {};
+    $('.adverse-effect-item').remove();
+
+}
+generateAESliderElements();
+
+let certaintyLabel = 'Certainty';
 let elementId = certaintyLabel.toLowerCase().replace(' ', '-');
 let certaintySliderElement = generateUnlabelledSliderElement(elementId);
 let certaintySliderLabels = ['Less', 'More'];
@@ -171,15 +190,15 @@ $('#certaintyHeader').after(certaintySliderElement);
 $(`.ui.slider#${elementId}`)
     .slider({
         min: 0,
-        max: 1,
-        start: 0.5,
+        max: 4,
+        start: 2,
         step: 0,
-        interpretLabel: function(value) {
-            return certaintySliderLabels[value];
-        },
+        // interpretLabel: function(value) {
+        //     return certaintySliderLabels[value];
+        // },
         onMove: (e) => {
             certainty = e;
-            update(currentDrugList, currentDrug, levelOfConcern, certainty);
+            updateRanking(currentDrugList, currentDrug, levelOfConcern, certainty);
         }
     });
 
@@ -205,34 +224,91 @@ function resize() {
     let sb = $('.ui.sidebar').width();
     $('#dataDisplay').width(w - sb - 30);
     filter();
-    //$('#dataDisplay').css('padding-right', sb + 30 + 'px');
 }
 
 function chooseAu() {
     $('#nz').removeClass('active');
     $('#au').addClass('active');
-    currentDrugList = auApList;
-    currentDrug = auAp;
-    update(currentDrugList, currentDrug, levelOfConcern, certainty);
+    currentCountry = 'au';
+    update();
 };
 
 function chooseNz() {
     $('#au').removeClass('active');
     $('#nz').addClass('active');
-    currentDrugList = nzApList;
-    currentDrug = nzAp;
-    update(currentDrugList, currentDrug, levelOfConcern, certainty);
+    currentCountry = 'nz';
+    update();
 };
+
+function chooseAd() {
+    currentMedicationType = 'ad';
+}
+
+function chooseAp() {
+    currentMedicationType = 'ap';
+}
+
+function updateDrug() {
+    if (currentCountry == 'nz' && currentMedicationType == 'ap') {
+        currentDrugList = nzApList;
+        currentDrug = nzAp;
+    }
+    if (currentCountry == 'au' && currentMedicationType == 'ap') {
+        currentDrugList = auApList;
+        currentDrug = auAp;
+    }
+    if (currentCountry == 'nz' && currentMedicationType == 'ad') {
+        currentDrugList = nzAdList;
+        currentDrug = nzAd;
+    }
+    if (currentCountry == 'au' && currentMedicationType == 'ad') {
+        currentDrugList = auAdList;
+        currentDrug = auAd;
+    }
+}
+
+function update() {
+    if (lastMedicationType == currentMedicationType) {
+        updateDrug();
+    } else {
+        lastMedicationType = currentMedicationType;
+        updateDrug();
+        clearAESliderElements();
+        generateAESliderElements();
+    }
+
+    updateRanking(currentDrugList, currentDrug, levelOfConcern, certainty);
+}
 
 $('.ui.sidebar')
     .sidebar('show')
 setTimeout(resize(), 0.1);
 $(window).resize(resize).trigger('resize');
-$('#au').click(chooseAu);
-$('#nz').click(chooseNz);
 
 $('.ui.modal')
     .modal('show');
 
-chooseNz();
 resize();
+
+$('#medication-type')
+    .dropdown({
+        values: [{
+                name: 'Antidepressant ranker',
+                value: 'ad',
+                selected: true,
+            },
+            {
+                name: 'Antipsychotic ranker',
+                value: 'ap'
+            }
+        ],
+        onChange: function(value, text, $selectedItem) {
+            currentMedicationType = value;
+            update();
+        }
+    });
+
+chooseNz();
+
+$('#nz').click(chooseNz);
+$('#au').click(chooseAu);
