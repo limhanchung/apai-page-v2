@@ -12,6 +12,14 @@ function toFindDuplicates(arry) {
     return [...new Set(uniqueElements)]
 }
 
+let globalAdList = ['amitriptyline', 'clomipramine', 'dosulepin', 'doxepin', 'imipramine', 'lofepramine', 'nortriptytyline', 'trimipramine', 'agomelatine', 'duloxetine', 'levomilnacipran', 'mianserin', 'mirtazapine', 'reboxetine', 'trazodone', 'venlafaxine', 'citalopram', 'escitalopram', 'fluoxetine', 'fluvoxamine', 'paroxetine', 'sertraline', 'vilazodone', 'vortioxetine', 'isocarboxazid', 'phenelzine', 'tranylcypromine', 'moclobemide', 'maprotiline', 'bupropion'];
+
+// From NZ formulary
+let nzAdList = ['citalopram', 'escitalopram', 'fluoxetine', 'paroxetine', 'sertraline', 'venlafaxine', 'amitriptyline', 'clomipramine', 'dosulepin', 'imipramine', 'nortriptytyline', 'tranylcypromine', 'moclobemide', 'mirtazapine', 'reboxetine', 'bupropion', 'vortioxetine'];
+
+// From PBS Australia
+let auAdList = ['amitriptyline', 'clomipramine', 'dosulepin', 'doxepin', 'imipramine', 'nortriptyline', 'citalopram', 'escitalopram', 'fluoxetine', 'fluvoxamine', 'paroxetine', 'sertraline', 'phenelzine', 'tranylcypromine', 'moclobemide', 'desvenlafaxine', 'duloxetine', 'lithium carbonate', 'mianserin', 'mirtazapine', 'reboxetine', 'venlafaxine', 'bupropion'];
+
 // Classes of antidepressants
 // Note: NASSA is most likely TECCA
 // Note: SSRI is similiar to SMS
@@ -321,8 +329,6 @@ for (const key in fullAdWithdrawal) {
     nFullAdWithdrawal[key] = normalisationRulesForAdWithdrawal[fullAdWithdrawal[key]];
 };
 
-console.log(nFullAdWithdrawal);
-
 // Overdose risk
 // Source: Maudsley Prescribing Guidelines 13th Edition
 // Notes:
@@ -373,6 +379,7 @@ for (const key in fullAdOverdose) {
     nFullAdOverdose[key] = normalisationRulesForAdOverdose[fullAdOverdose[key]];
 };
 
+console.log(nFullAdOverdose);
 // !!!! Important continue here
 
 // !!! Todo: Currently doing relative efficacy
@@ -404,16 +411,54 @@ const adEfficacy = {
     reboxetine: [1.37, 1.16, 1.63]
 };
 
+let maximumEfficacy = 0;
+let minimumEfficacy = 9;
+for (const k in adEfficacy) {
+    if (k[2] > maximumEfficacy) {
+        maximumEfficacy = k[2];
+    }
+    if (k[1] < minimumEfficacy) {
+        minimumEfficacy = k[1];
+    }
+}
+let efficacyRange = maximumEfficacy - minimumEfficacy;
+const nEfficacy = {};
+for (const k in adEfficacy) {
+    nEfficacy[k] = [
+        (adEfficacy[k][0] - minimumEfficacy) / efficacyRange,
+        (adEfficacy[k][1] - minimumEfficacy) / efficacyRange,
+        (adEfficacy[k][2] - minimumEfficacy) / efficacyRange,
+    ]
+}
 
 
-let globalAdList = ['amitriptyline', 'clomipramine', 'dosulepin', 'doxepin', 'imipramine', 'lofepramine', 'nortriptytyline', 'trimipramine', 'agomelatine', 'duloxetine', 'levomilnacipran', 'mianserin', 'mirtazapine', 'reboxetine', 'trazodone', 'venlafaxine', 'citalopram', 'escitalopram', 'fluoxetine', 'fluvoxamine', 'paroxetine', 'sertraline', 'vilazodone', 'vortioxetine', 'isocarboxazid', 'phenelzine', 'tranylcypromine', 'moclobemide', 'maprotiline', 'bupropion'];
 
-// From NZ formulary
-let nzAdList = ['citalopram', 'escitalopram', 'fluoxetine', 'paroxetine', 'sertraline', 'venlafaxine', 'amitriptyline', 'clomipramine', 'dosulepin', 'imipramine', 'nortriptytyline', 'tranylcypromine', 'moclobemide', 'mirtazapine', 'reboxetine', 'bupropion', 'vortioxetine'];
+// Expanded classes of withdrawal
+// const fullAdWithdrawal = {};
+// for (const k in adWithdrawal) {
+//     let expanded = expandClass(k);
+//     expanded.forEach(e => {
+//         if (!fullAdWithdrawal.hasOwnProperty(e)) {
+//             fullAdWithdrawal[e] = adWithdrawal[k];
+//         }
+//     });
+//     if (expanded.length == 0) {
+//         fullAdWithdrawal[k] = adWithdrawal[k];
+//     }
+// };
 
-// From PBS Australia
-let auAdList = ['amitriptyline', 'clomipramine', 'dosulepin', 'doxepin', 'imipramine', 'nortriptyline', 'citalopram', 'escitalopram', 'fluoxetine', 'fluvoxamine', 'paroxetine', 'sertraline', 'phenelzine', 'tranylcypromine', 'moclobemide', 'desvenlafaxine', 'duloxetine', 'lithium carbonate', 'mianserin', 'mirtazapine', 'reboxetine', 'venlafaxine', 'bupropion'];
+// const normalisationRulesForAdWithdrawal = {
+//     0: [0.00, 0.33],
+//     1: [0.33, 0.67],
+//     2: [0.67, 1.00],
+//     3: [0.00, 0.00]
+// };
 
+// const nFullAdWithdrawal = {};
+// for (const key in fullAdWithdrawal) {
+//     nFullAdWithdrawal[key] = normalisationRulesForAdWithdrawal[fullAdWithdrawal[key]];
+// };
+// *** /
 
 // GenerateCountrySpecificApAeScore( array, [array, array]|[string, array]... )
 // Desvenlafaxine is equivalent to venlafaxine
@@ -479,12 +524,6 @@ function generateCountrySpecificAeScore(adList) {
 
     return [uniqueAeList, uniqueScoreRange];
 };
-
-// let nzAd = generateCountrySpecificAeScore(nzAdList, [nAdMaeList, nAdMAe], [nAdNZFAeList, nAdNZFAe], ['Withdrawals', nFullAdWithdrawal], ['Overdose risk', nFullAdOverdose]);
-// let auAd = generateCountrySpecificAeScore(nzAdList, [nAdMaeList, nAdMAe], [nAdNZFAeList, nAdNZFAe], ['Withdrawals', nFullAdWithdrawal], ['Overdose risk', nFullAdOverdose]);
-
-// let nzAd = generateCountrySpecificAeScore(nzAdList, [nAdNZFAeList, nAdNZFAe], ['Withdrawals', nFullAdWithdrawal], ['Overdose risk', nFullAdOverdose]);
-// let auAd = generateCountrySpecificAeScore(auAdList, [nAdNZFAeList, nAdNZFAe], ['Withdrawals', nFullAdWithdrawal], ['Overdose risk', nFullAdOverdose]);
 
 let nzAd = generateCountrySpecificAeScore(nzAdList, [nAdMaeList, nAdMAe], [nAdNZFAeList, nAdNZFAe], ['Overdose', nFullAdOverdose], ['Withdrawal', nFullAdWithdrawal]);
 let auAd = generateCountrySpecificAeScore(auAdList, [nAdMaeList, nAdMAe], [nAdNZFAeList, nAdNZFAe], ['Overdose', nFullAdOverdose], ['Withdrawal', nFullAdWithdrawal]);
