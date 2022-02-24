@@ -29,13 +29,9 @@ let currentDrug = nzAd;
 let currentCountry = 'nz';
 let lastMedicationType = 'ad';
 let currentMedicationType = 'ad';
-// let currentDrugList = nzApList;
-// let currentDrug = nzAp;
-// let currentCountry = 'nz';
-// let lastMedicationType = 'ap';
-// let currentMedicationType = 'ap';
 let levelOfConcern = {};
 let certainty = 0;
+let maximumCertainty = 4;
 
 function updateTable(elementId, sortedValue) {
     $('#' + elementId).empty();
@@ -58,6 +54,7 @@ function updateRanking(drugList, drug, levelOfConcern, certainty) {
     for (const k in levelOfConcern) {
         totalMean += levelOfConcern[k];
     }
+
     drugList.forEach(drugName => {
         weightedMean[drugName] = [];
         let locCounter = 0;
@@ -109,10 +106,13 @@ function updateRanking(drugList, drug, levelOfConcern, certainty) {
         normalisedWeightedRange[k] = weightedRange[k] / hypothethicalMaximumWeightedRange;
     }
 
+    let normalisedCertainty = certainty / maximumCertainty;
+
     let compositeWeightedValue = {};
     for (const k in weightedMean) {
-        compositeWeightedValue[k] = normalisedWeightedMean[k] * (1 - certainty) + normalisedWeightedRange[k] * certainty;
+        compositeWeightedValue[k] = normalisedWeightedMean[k] * (1 - normalisedCertainty) + normalisedWeightedRange[k] * normalisedCertainty;
     }
+
 
     let sortedCompositeWeightedValue = Object.entries(compositeWeightedValue)
         .sort(([, a], [, b]) => a - b)
@@ -163,7 +163,7 @@ function generateAESliderElements() {
         $(`.ui.slider#${elementId}`)
             .slider({
                 min: 0,
-                max: 4,
+                max: maximumCertainty,
                 start: start,
                 step: 0,
                 //smooth: true,
