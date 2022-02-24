@@ -304,6 +304,9 @@ for (const k in adWithdrawal) {
             fullAdWithdrawal[e] = adWithdrawal[k];
         }
     });
+    if (expanded.length == 0) {
+        fullAdWithdrawal[k] = adWithdrawal[k];
+    }
 };
 
 const normalisationRulesForAdWithdrawal = {
@@ -317,6 +320,8 @@ const nFullAdWithdrawal = {};
 for (const key in fullAdWithdrawal) {
     nFullAdWithdrawal[key] = normalisationRulesForAdWithdrawal[fullAdWithdrawal[key]];
 };
+
+console.log(nFullAdWithdrawal);
 
 // Overdose risk
 // Source: Maudsley Prescribing Guidelines 13th Edition
@@ -481,8 +486,8 @@ function generateCountrySpecificAeScore(adList) {
 // let nzAd = generateCountrySpecificAeScore(nzAdList, [nAdNZFAeList, nAdNZFAe], ['Withdrawals', nFullAdWithdrawal], ['Overdose risk', nFullAdOverdose]);
 // let auAd = generateCountrySpecificAeScore(auAdList, [nAdNZFAeList, nAdNZFAe], ['Withdrawals', nFullAdWithdrawal], ['Overdose risk', nFullAdOverdose]);
 
-let nzAd = generateCountrySpecificAeScore(nzAdList, [nAdMaeList, nAdMAe], [nAdNZFAeList, nAdNZFAe]);
-let auAd = generateCountrySpecificAeScore(auAdList, [nAdMaeList, nAdMAe], [nAdNZFAeList, nAdNZFAe]);
+let nzAd = generateCountrySpecificAeScore(nzAdList, [nAdMaeList, nAdMAe], [nAdNZFAeList, nAdNZFAe], ['Overdose', nFullAdOverdose], ['Withdrawal', nFullAdWithdrawal]);
+let auAd = generateCountrySpecificAeScore(auAdList, [nAdMaeList, nAdMAe], [nAdNZFAeList, nAdNZFAe], ['Overdose', nFullAdOverdose], ['Withdrawal', nFullAdWithdrawal]);
 
 
 export { nzAd, nzAdList, auAd, auAdList };
