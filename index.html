@@ -42,12 +42,15 @@
         </div>
         <div class="item">
             <div class="menu">
-                <div id="levelOfConcernHeader" class="item header">Level of concern</div>
+                <div id="" class="item header ">Risk vs benefit</div>
+                <div id="efficacyHeader" class="item ">
+                    <span style="display: inline-block;">Adverse effects</span><span style="display: inline-block; float: right;">Efficacy</span>
+                </div>
             </div>
         </div>
         <div class="item">
             <div class="menu">
-                <div id="certaintyHeader" class="item header">Certainty</div>
+                <div id="adverseEffectHeader" class="item header">Adverse Effect</div>
             </div>
         </div>
     </div>
@@ -59,33 +62,13 @@
                     <thead>
                         <tr>
                             <th class="colRank">Rank</th>
-                            <th class="colName">Antipsychotic</th>
-                            <th class="colWsmComposite">WSM(Composite)</th>
-                            <th class="colWsmMean">WSM(Mean)</th>
-                            <th class="colWsmRange">WSM(Range)</th>
+                            <th class="colName">Medication</th>
+                            <th class="colWsmTotal">Score</th>
                         </tr>
                     </thead>
                     <tbody id="rankingTableBody">
                     </tbody>
                 </table>
-                <h3 class="ui dividing header">Notes</h3>
-                <div class="ui horizontal segments">
-                    <div class="ui segment">
-                        <h4 class="ui header">Level of concern</h4>
-                        <p>The level of concern corresponds to the following values:</p>
-                        <ul class="ui list">
-                            <li>0 - not at all concerned</li>
-                            <li>1 - slightly concerned</li>
-                            <li>2 - somewhat concerned</li>
-                            <li>3 - moderately concerned</li>
-                            <li>4 - extremely concerned</li>
-                        </ul>
-                    </div>
-                    <div class="ui segment">
-                        <h4 class="ui header">Certainty</h4>
-                        <p>The less the value of certainty, less weight is given to the range and vice versa</p>
-                    </div>
-                </div>
             </div>
         </div>
         <script type="module" src="script.js"></script>

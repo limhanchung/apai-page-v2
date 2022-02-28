@@ -15,7 +15,7 @@ function toFindDuplicates(arry) {
 let globalAdList = ['amitriptyline', 'clomipramine', 'dosulepin', 'doxepin', 'imipramine', 'lofepramine', 'nortriptytyline', 'trimipramine', 'agomelatine', 'duloxetine', 'levomilnacipran', 'mianserin', 'mirtazapine', 'reboxetine', 'trazodone', 'venlafaxine', 'citalopram', 'escitalopram', 'fluoxetine', 'fluvoxamine', 'paroxetine', 'sertraline', 'vilazodone', 'vortioxetine', 'isocarboxazid', 'phenelzine', 'tranylcypromine', 'moclobemide', 'maprotiline', 'bupropion'];
 
 // From NZ formulary
-let nzAdList = ['citalopram', 'escitalopram', 'fluoxetine', 'paroxetine', 'sertraline', 'venlafaxine', 'amitriptyline', 'clomipramine', 'dosulepin', 'imipramine', 'nortriptytyline', 'tranylcypromine', 'moclobemide', 'mirtazapine', 'reboxetine', 'bupropion', 'vortioxetine'];
+let nzAdList = ['citalopram', 'escitalopram', 'fluoxetine', 'paroxetine', 'sertraline', 'venlafaxine', 'amitriptyline', 'clomipramine', 'dosulepin', 'imipramine', 'nortriptyline', 'tranylcypromine', 'moclobemide', 'mirtazapine', 'reboxetine', 'bupropion', 'vortioxetine'];
 
 // From PBS Australia
 let auAdList = ['amitriptyline', 'clomipramine', 'dosulepin', 'doxepin', 'imipramine', 'nortriptyline', 'citalopram', 'escitalopram', 'fluoxetine', 'fluvoxamine', 'paroxetine', 'sertraline', 'phenelzine', 'tranylcypromine', 'moclobemide', 'desvenlafaxine', 'duloxetine', 'lithium carbonate', 'mianserin', 'mirtazapine', 'reboxetine', 'venlafaxine', 'bupropion'];
@@ -169,7 +169,7 @@ const adMAe = {
     doxepin: [3, 2, 3, 3, 1, 1],
     imipramine: [2, 3, 3, 3, 1, 1],
     lofepramine: [1, 1, 1, 2, 1, 1],
-    nortriptyline: [1, 2, 2, 1, 1, , 1],
+    nortriptyline: [1, 2, 2, 1, 1, 1],
     trimipramine: [3, 3, 2, 2, 1, 1],
     agomelatine: [1, 0, 0, 0, 0, 0],
     duloxetine: [0, 0, 0, 0, 2, 2],
@@ -195,10 +195,10 @@ const adMAe = {
 
 // Normalisation values to ranges between 0.0 to 1.0
 const normalisationRulesForAdMAe = {
-    0: [0.00, 0.10],
-    1: [0.10, 0.33],
-    2: [0.33, 0.67],
-    3: [0.67, 1.00],
+    0: [0.05, 0.00, 0.10],
+    1: [0.215, 0.10, 0.33],
+    2: [0.5, 0.33, 0.67],
+    3: [0.835, 0.67, 1.00],
 };
 
 // Normalised antidepressant adverse effects
@@ -262,12 +262,12 @@ const adNZFAe = {
 
 // Normalisation values to ranges between 0.0 to 1.0
 const normalisationRulesForAdNZFAe = {
-    0: [0.00, 0.10],
-    1: [0.00, 0.33],
-    2: [0.10, 0.33],
-    3: [0.33, 0.67],
-    4: [0.67, 1.00],
-    5: [0.00, 1.00]
+    0: [0.05, 0.00, 0.10],
+    1: [0.165, 0.00, 0.33],
+    2: [0.215, 0.10, 0.33],
+    3: [0.5, 0.33, 0.67],
+    4: [0.835, 0.67, 1.00],
+    5: [0.5, 0.00, 1.00]
 };
 
 // Normalised antidepressant adverse effects
@@ -318,10 +318,10 @@ for (const k in adWithdrawal) {
 };
 
 const normalisationRulesForAdWithdrawal = {
-    0: [0.00, 0.33],
-    1: [0.33, 0.67],
-    2: [0.67, 1.00],
-    3: [0.00, 0.00]
+    0: [0.165, 0.00, 0.33],
+    1: [0.5, 0.33, 0.67],
+    2: [0.835, 0.67, 1.00],
+    3: [0.00, 0.00, 0.00]
 };
 
 const nFullAdWithdrawal = {};
@@ -369,9 +369,9 @@ for (const k in adOverdose) {
 };
 
 const normalisationRulesForAdOverdose = {
-    0: [0.00, 0.33],
-    1: [0.33, 0.67],
-    2: [0.67, 1.00],
+    0: [0.165, 0.00, 0.33],
+    1: [0.5, 0.33, 0.67],
+    2: [0.835, 0.67, 1.00],
 };
 
 const nFullAdOverdose = {};
@@ -379,14 +379,7 @@ for (const key in fullAdOverdose) {
     nFullAdOverdose[key] = normalisationRulesForAdOverdose[fullAdOverdose[key]];
 };
 
-console.log(nFullAdOverdose);
-// !!!! Important continue here
-
-// !!! Todo: Currently doing relative efficacy
-// Slightly different model
-// Needs to be combined later with ae in someway
-// What is milnacipran?
-// !!!!
+/* From Ciprani paper */
 const adEfficacy = {
     amitriptyline: [2.13, 1.89, 2.41],
     mirtazapine: [1.89, 1.64, 2.20],
@@ -394,13 +387,13 @@ const adEfficacy = {
     venlafaxine: [1.78, 1.61, 1.96],
     paroxetine: [1.75, 1.61, 1.90],
     milnacipran: [1.74, 1.37, 2.23],
-    fluvoxamine: [1.69, 1, 41, 2.02],
+    fluvoxamine: [1.69, 1.41, 2.02],
     escitalopram: [1.68, 1.5, 1.87],
     nefazodone: [1.67, 1.32, 2.12],
     sertraline: [1.67, 1.49, 1.87],
     vortioxetine: [1.66, 1.45, 1.92],
     agomelatine: [1.65, 1.44, 1.88],
-    vilazodone: [1.60, 1.28, 2],
+    vilazodone: [1.60, 1.28, 2.0],
     levomilnacipran: [1.59, 1.24, 2.05],
     bupropion: [1.58, 1.35, 1.86],
     fluoxetine: [1.52, 1.40, 1.66],
@@ -411,59 +404,28 @@ const adEfficacy = {
     reboxetine: [1.37, 1.16, 1.63]
 };
 
-let maximumEfficacy = 0;
-let minimumEfficacy = 9;
+let maximumEfficacy = 1.0;
+let minimumEfficacy = 1;
 for (const k in adEfficacy) {
-    if (k[2] > maximumEfficacy) {
-        maximumEfficacy = k[2];
-    }
-    if (k[1] < minimumEfficacy) {
-        minimumEfficacy = k[1];
+    if (adEfficacy[k][2] > maximumEfficacy) {
+        maximumEfficacy = adEfficacy[k][2];
     }
 }
 let efficacyRange = maximumEfficacy - minimumEfficacy;
-const nEfficacy = {};
+
+const nAdEfficacy = {};
 for (const k in adEfficacy) {
-    nEfficacy[k] = [
+    nAdEfficacy[k] = [
         (adEfficacy[k][0] - minimumEfficacy) / efficacyRange,
         (adEfficacy[k][1] - minimumEfficacy) / efficacyRange,
         (adEfficacy[k][2] - minimumEfficacy) / efficacyRange,
     ]
 }
 
-
-
-// Expanded classes of withdrawal
-// const fullAdWithdrawal = {};
-// for (const k in adWithdrawal) {
-//     let expanded = expandClass(k);
-//     expanded.forEach(e => {
-//         if (!fullAdWithdrawal.hasOwnProperty(e)) {
-//             fullAdWithdrawal[e] = adWithdrawal[k];
-//         }
-//     });
-//     if (expanded.length == 0) {
-//         fullAdWithdrawal[k] = adWithdrawal[k];
-//     }
-// };
-
-// const normalisationRulesForAdWithdrawal = {
-//     0: [0.00, 0.33],
-//     1: [0.33, 0.67],
-//     2: [0.67, 1.00],
-//     3: [0.00, 0.00]
-// };
-
-// const nFullAdWithdrawal = {};
-// for (const key in fullAdWithdrawal) {
-//     nFullAdWithdrawal[key] = normalisationRulesForAdWithdrawal[fullAdWithdrawal[key]];
-// };
-// *** /
-
 // GenerateCountrySpecificApAeScore( array, [array, array]|[string, array]... )
 // Desvenlafaxine is equivalent to venlafaxine
 function generateCountrySpecificAeScore(adList) {
-    const unknown = [0.00, 1.00];
+    const unknown = [0.5, 0.00, 1.00];
     let aeList = [];
     for (let i = 1; i < arguments.length; i++) {
         if (typeof arguments[i][0] == 'object') {
@@ -473,25 +435,25 @@ function generateCountrySpecificAeScore(adList) {
         }
     };
 
-    let scoreRange = {};
-    adList.forEach(apName => {
-        scoreRange[apName] = [];
+    let aeScore = {};
+    adList.forEach(ad => {
+        aeScore[ad] = [];
         for (let i = 1; i < arguments.length; i++) {
             if (typeof arguments[i][0] == 'object') {
-                if (apName in arguments[i][1]) {
-                    arguments[i][1][apName].forEach(score => scoreRange[apName].push(score));
-                } else if (apName == 'desvenlafaxine' && 'venlafaxine' in arguments[i][1]) {
-                    arguments[i][1]['venlafaxine'].forEach(score => scoreRange[apName].push(score));
+                if (ad in arguments[i][1]) {
+                    arguments[i][1][ad].forEach(score => aeScore[ad].push(score));
+                } else if (ad == 'desvenlafaxine' && 'venlafaxine' in arguments[i][1]) {
+                    arguments[i][1]['venlafaxine'].forEach(score => aeScore[ad].push(score));
                 } else {
                     for (let j = 0; j < arguments[i][0].length; j++) {
-                        scoreRange[apName].push(unknown);
+                        aeScore[ad].push(unknown);
                     }
                 }
             } else if (typeof arguments[i][0] == 'string') {
-                if (apName in arguments[i][1]) {
-                    scoreRange[apName].push(arguments[i][1][apName]);
+                if (ad in arguments[i][1]) {
+                    aeScore[ad].push(arguments[i][1][ad]);
                 } else {
-                    scoreRange[apName].push(unknown);
+                    aeScore[ad].push(unknown);
                 }
             }
         };
@@ -506,14 +468,14 @@ function generateCountrySpecificAeScore(adList) {
 
     // Get first non unknown value
     let uniqueScoreRange = {};
-    for (const l in scoreRange) {
+    for (const l in aeScore) {
         uniqueScoreRange[l] = [];
         let value = unknown;
         for (const k in countAe) {
             let indexes = countAe[k];
             for (let i = 0; i < indexes.length; i++) {
-                if (scoreRange[l][indexes[i]] != unknown) {
-                    value = scoreRange[l][indexes[i]];
+                if (aeScore[l][indexes[i]] != unknown) {
+                    value = aeScore[l][indexes[i]];
                     break;
                 }
             };
@@ -525,12 +487,35 @@ function generateCountrySpecificAeScore(adList) {
     return [uniqueAeList, uniqueScoreRange];
 };
 
-let nzAd = generateCountrySpecificAeScore(nzAdList, [nAdMaeList, nAdMAe], [nAdNZFAeList, nAdNZFAe], ['Overdose', nFullAdOverdose], ['Withdrawal', nFullAdWithdrawal]);
-let auAd = generateCountrySpecificAeScore(auAdList, [nAdMaeList, nAdMAe], [nAdNZFAeList, nAdNZFAe], ['Overdose', nFullAdOverdose], ['Withdrawal', nFullAdWithdrawal]);
+function generateCountrySpecificEfficacyScore(adList, efficacyData) {
+    const unknown = [0.5, 0.00, 1.00];
+    let efficacyList = [];
+    for (let i = 1; i < arguments.length; i++) {
+        if (typeof arguments[i][0] == 'object') {
+            arguments[i][0].forEach(e => aeList.push(e));
+        } else if (typeof arguments[i][0] == 'string') {
+            aeList.push(arguments[i][0]);
+        }
+    };
 
+    let efficacyScore = {};
+    adList.forEach(ad => {
+        if (efficacyData.hasOwnProperty(ad)) {
+            efficacyScore[ad] = efficacyData[ad];
+        } else {
+            efficacyScore[ad] = unknown;
+        }
+    })
 
-export { nzAd, nzAdList, auAd, auAdList };
+    return efficacyScore;
+};
 
+let nzAdAe = generateCountrySpecificAeScore(nzAdList, [nAdMaeList, nAdMAe], [nAdNZFAeList, nAdNZFAe], ['Overdose', nFullAdOverdose], ['Withdrawal', nFullAdWithdrawal]);
+let nzAdEfficacy = generateCountrySpecificEfficacyScore(nzAdList, nAdEfficacy);
+let auAdAe = generateCountrySpecificAeScore(auAdList, [nAdMaeList, nAdMAe], [nAdNZFAeList, nAdNZFAe], ['Overdose', nFullAdOverdose], ['Withdrawal', nFullAdWithdrawal]);
+let auAdEfficacy = generateCountrySpecificEfficacyScore(auAdList, nAdEfficacy);
+
+export { nzAdAe, nzAdList, nzAdEfficacy, auAdAe, auAdList, auAdEfficacy };
 
 // Todo: Incorporate relative efficacy <Ciprani>
 // Todo: Incorporate ease of switching <https://www.nps.org.au/assets/p12-Boyce-Ma_v2.pdf>
@@ -538,7 +523,6 @@ export { nzAd, nzAdList, auAd, auAdList };
 // Todo: Incorporate hyponatraemia  - Need to synthesize maudsley
 // Todo: Incorporate bleeding  - Need to synthesize maudsley
 // Todo: Incorporate diabetes - Need to synthesize maudsley\
-// Todo: Incorporate hyperprolactinaemia - Need to synthesize maudsley\
-// Todo: 
+// Todo: Incorporate hyperprolactinaemia - Need to synthesize maudsley
 // Todo: Find the unknown values i.e bupropion (NDRI) withdrawal
 // Todo: Fixed automatic assingment of desvenlafaxine with venlafaxine only if venlafaxine does not exist. Or in more general sense, equivalence between antidepressants

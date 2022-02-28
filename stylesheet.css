@@ -16,3 +16,13 @@ html {
     bottom: 0px;
     height: 100%;
 }
+
+.item>p {
+    color: white;
+    margin-bottom: 0px;
+}
+
+#efficacyHeader>span {
+    color: white;
+    margin-bottom: 0px;
+}
