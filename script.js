@@ -140,18 +140,6 @@ function updateRanking(names, ae, adverseEffect, aeCertaintyMultiplier, efficacy
         normalisedWeightedAeRange[k] = weightedAeRange[k] / hypothethicalMaximumWeightedAeRange;
     }
 
-    let compositeWeightedAeValue = {};
-    for (const k in weightedAeMean) {
-        compositeWeightedAeValue[k] = normalisedWeightedAeMean[k] * aeMeanMultiplier + normalisedWeightedAeRange[k] * aeRangeMulitplier
-    }
-
-    let compositeEfficacyValue = {};
-    for (const k in compositeWeightedAeValue) {
-        console.log(k, efficacy[k][2], efficacy[k][1]);
-        compositeEfficacyValue[k] = efficacy[k][0] -
-            (efficacy[k][2] - efficacy[k][1]) * efficacyRangeMultiplier;
-    }
-
     let compositeTotalValue = {};
     for (const k in compositeWeightedAeValue) {
         compositeTotalValue[k] =
