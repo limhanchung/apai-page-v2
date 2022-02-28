@@ -81,7 +81,6 @@ function updateRanking(names, ae, adverseEffect, aeCertaintyMultiplier, efficacy
     efficacyMeanMultiplier = efficacyWeight;
     aeMeanMultiplier = 1 - efficacyWeight;
 
-
     let weightedAeMean = {};
     let totalAeMean = 0;
 
@@ -141,14 +140,14 @@ function updateRanking(names, ae, adverseEffect, aeCertaintyMultiplier, efficacy
     }
 
     let compositeTotalValue = {};
-    for (const k in compositeWeightedAeValue) {
+    names.forEach(k => {
         compositeTotalValue[k] =
             efficacy[k][0] * efficacyMeanMultiplier -
             Math.abs(efficacy[k][2] -
                 efficacy[k][1]) * efficacyRangeMultiplier -
             normalisedWeightedAeMean[k] * aeMeanMultiplier -
             normalisedWeightedAeRange[k] * aeRangeMulitplier;
-    }
+    });
 
 
     let sortedCompositeTotalValue = Object.entries(compositeTotalValue)
@@ -309,12 +308,12 @@ resize();
 $('#medication-type')
     .dropdown({
         values: [{
-                name: 'Antidepressant ranker',
+                name: 'Antidepressants',
                 value: 'ad',
                 selected: true,
             },
             {
-                name: 'Antipsychotic ranker',
+                name: 'Antipsychotics',
                 value: 'ap'
             }
         ],
