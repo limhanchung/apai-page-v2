@@ -27,6 +27,16 @@ html {
     margin-bottom: 0px;
 }
 
-.mylabel {
+.option-label {
     color: white;
+}
+
+.option-dropdown {
+    float: right;
+}
+
+#adverseEffectHeader {
+    color: white;
+    font-style: oblique;
+    font-size: 1.1em;
 }

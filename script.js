@@ -323,7 +323,24 @@ $('#medication-type')
         }
     });
 
-chooseNz();
 
-$('#nz').click(chooseNz);
-$('#au').click(chooseAu);
+$('#country')
+    .dropdown({
+        values: [{
+                name: 'New Zealand',
+                value: 'nz',
+                selected: true,
+            },
+            {
+                name: 'Australia',
+                value: 'au'
+            }
+        ],
+        onChange: function(value, text, $selectedItem) {
+            console.log(value);
+            currentCountry = value;
+            update();
+        }
+    });
+
+chooseNz();
