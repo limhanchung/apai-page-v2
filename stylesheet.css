@@ -3,10 +3,6 @@ html {
     background: #fff;
 }
 
-.full-height {
-    bottom: 0px;
-}
-
 #dataDisplay {
     margin: 1rem 1rem;
     width: 100%;

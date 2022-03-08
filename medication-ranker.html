@@ -45,7 +45,7 @@
     </script>
 </head>
 
-<body>
+<body class="pushable">
 
     <!-- Following Menu -->
     <div class="ui large top fixed hidden menu">
@@ -123,7 +123,7 @@
     </div>
 
 
-    <div class="full-height ui">
+    <div class="full-height ui pusher">
         <div id="dataDisplay" class="ui container">
             <div>For collaborations/feedback, please contact <a href="mailto: mypsychtools.contact@gmail.com">mypsychtools.contact@gmail.com</a></div>
             <table id="rankingTable" class="ui celled table unstackable">
@@ -138,8 +138,19 @@
                 </tbody>
             </table>
         </div>
+    </div>
 
-        <script type="module" src="medication-ranker.js"></script>
+    <div class="ui inverted vertical footer segment">
+        <div class="ui center aligned container">
+            <div class="ui horizontal inverted small divided link list">
+                <a class="item" href="mailto: mypsychtools.contact@gmail.com">Contact</a>
+                <a class="item" href="#">Terms and Conditions</a>
+                <a class="item" href="#">Privacy Policy</a>
+            </div>
+        </div>
+    </div>
+
+    <script type="module" src="medication-ranker.js"></script>
 </body>
 
 </html>

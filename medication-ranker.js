@@ -337,7 +337,6 @@ $('#country')
             }
         ],
         onChange: function(value, text, $selectedItem) {
-            console.log(value);
             currentCountry = value;
             update();
         }

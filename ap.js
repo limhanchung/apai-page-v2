@@ -245,6 +245,5 @@ let nzApAe = generateCountrySpecificAeScore(nzApList, [apAeList, nApAe], ['QTc p
 let nzApEfficacy = generateCountrySpecificEfficacyScore(nzApList, nApEfficacy);
 let auApAe = generateCountrySpecificAeScore(auApList, [apAeList, nApAe], ['QTc prolongation', nQtc]);
 let auApEfficacy = generateCountrySpecificEfficacyScore(auApList, nApEfficacy);
-console.log(auApEfficacy);
 
 export { nzApAe, nzApList, nzApEfficacy, auApAe, auApList, auApEfficacy };
