@@ -32,7 +32,7 @@ function generateTableRow(rank, medicationName, total) {
     return `<tr>
     <td class="colRank" data-label="Rank">${rank}</td>
     <td class="colName" data-label="Medication">${medicationName}</td>
-    <td class="colScore" data-label="Score">${total.toFixed(4)}</td>
+    <td class="colTotalScore" data-label="Score">${total.toFixed(4)}</td>
 </tr>`;
 };
 
@@ -231,10 +231,10 @@ function filter() {
 };
 
 function resize() {
-    var w = $(window).width();
-    let sb = $('.ui.sidebar').width();
-    $('#dataDisplay').width(w - sb - 30);
-    filter();
+    // var w = $(window).width();
+    // let sb = $('.ui.sidebar').width();
+    // $('#dataDisplay').width(w - sb - 30);
+    // filter();
 }
 
 function chooseAu() {
@@ -295,15 +295,15 @@ function update() {
     updateRanking(currentDrugList, currentAe, adverseEffect, aeCertainty, currentEfficacy, efficacyWeight);
 }
 
-$('.ui.sidebar')
-    .sidebar('show')
-setTimeout(resize(), 0.1);
-$(window).resize(resize).trigger('resize');
+// $('.ui.sidebar')
+//     .sidebar('show')
+// setTimeout(resize(), 0.1);
+// $(window).resize(resize).trigger('resize');
 
 $('.ui.modal')
     .modal('show');
 
-resize();
+//resize();
 
 $('#medication-type')
     .dropdown({
